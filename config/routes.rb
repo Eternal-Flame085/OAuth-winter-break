@@ -4,4 +4,6 @@ Rails.application.routes.draw do
 
   get '/auth/github/callback', to: 'sessions#create'
   get '/dashboard', to: 'dashboard#show'
+  get '/public', to: 'repos#public_repos'
+  get '/private', to: 'repos#private_repos'
 end

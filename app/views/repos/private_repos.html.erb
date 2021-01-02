@@ -1,0 +1,8 @@
+<h1><%= current_user.username %>'s private repository list</h1>
+
+<h3>Repository count <%= @repos.count %></h3>
+<% @repos.each do |repo| %>
+  <% if repo[:private] == true %>
+    <%= link_to repo[:name], repo[:html_url] %><br><br>
+  <% end %>
+<% end %>
