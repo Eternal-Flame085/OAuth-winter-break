@@ -1,22 +1,11 @@
 class ReposController < ApplicationController
   def public_repos
-    conn = Faraday.new(url: 'https://api.github.com')
-
-    response = conn.get("/users/Eternal-Flame085/repos")
+    response = GithubService.get_public_repos(current_user)
     @repos = JSON.parse(response.body, symbolize_names: true)
   end
 
   def private_repos
-    conn = Faraday.new(
-      url: 'https://api.github.com',
-      headers: {
-        'Authorization': "token #{current_user.token}"
-      }
-    )
-    response = conn.get("/user/repos") do |req|
-      req.params['type'] = 'private'
-    end
-
+    response = GithubService.get_private_repos(current_user)
     @repos = JSON.parse(response.body, symbolize_names: true)
   end
 end

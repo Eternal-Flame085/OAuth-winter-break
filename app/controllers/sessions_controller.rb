@@ -1,27 +1,11 @@
 class SessionsController <  ApplicationController
   def create
-    client_id = '2901152965a92c3b41d2'
-    client_secret = '259d58cb469d6b1519fa857c8375833da1d637f7'
-    code = params[:code]
-
-    conn = Faraday.new(url: 'https://github.com', headers: {'Accept': 'application/json'})
-
-    response = conn.post('/login/oauth/access_token') do |req|
-      req.params['code'] = code
-      req.params['client_id'] = client_id
-      req.params['client_secret'] = client_secret
-    end
+    response = OauthService.get_access_token(params[:code])
 
     data = JSON.parse(response.body, symbolize_names: true)
     access_token = data[:access_token]
 
-    conn = Faraday.new(
-    url: 'https://api.github.com',
-      headers: {
-        'Authorization': "token #{access_token}"
-      }
-    )
-    response = conn.get('/user')
+    response = OauthService.get_user(access_token)
     data = JSON.parse(response.body, symbolize_names: true)
 
     user          = User.find_or_create_by(uid: data[:id])
